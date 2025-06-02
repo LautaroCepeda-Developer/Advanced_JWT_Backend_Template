@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
 import { createUser, getUserByUsername } from '../models/auth/userModel.mjs';
-import { isEmailValid, isUsernameValid } from '../tools/commonValidations';
+import { isEmailValid, isUsernameValid } from '../tools/commonValidations.mjs';
 
 const hashPassword = (password) => {
     return bcrypt.hash(password, 12);

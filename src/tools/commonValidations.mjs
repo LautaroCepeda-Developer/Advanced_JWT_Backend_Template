@@ -1,4 +1,4 @@
-import occurrences from './ocurrences.js';
+import occurrences from './ocurrences.mjs';
 
 export const isEmailValid = (email) => {
     if (!email) return false;

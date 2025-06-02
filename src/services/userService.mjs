@@ -1,5 +1,5 @@
 import * as UserModel from '../models/auth/userModel.mjs';
-import { isEmailValid, isUsernameValid } from '../tools/commonValidations';
+import { isEmailValid, isUsernameValid } from '../tools/commonValidations.mjs';
 
 // GET
 export const getUsersWithPagination = async (req, res) => {
