@@ -19,7 +19,6 @@ const userSchema = z.object({
         .string({
             required_error: 'email is required.',
         })
-        .trim()
         .toLowerCase()
         .email({ pattern: z.regexes.unicodeEmail }),
     username: z

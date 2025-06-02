@@ -1,5 +1,6 @@
 import * as UserModel from '../models/auth/userModel.mjs';
-import { isEmailValid, isUsernameValid } from '../tools/commonValidations.mjs';
+import { hashPassword } from './authService.mjs';
+import { validateUser, validatePartialUser } from '../schemas/user.mjs';
 
 // GET
 export const getUsersWithPagination = async (req, res) => {
@@ -39,79 +40,51 @@ export const getUsersWithPagination = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-    const { id } = req.query;
+    const { id } = req.params;
+    // If validations fails throws an error with details
+    await validatePartialUser({ id });
 
-    const parsedId = parseInt(id);
-
-    if (Number.isNaN(parsedId)) {
-        throw new Error("The value of 'id' can only be a integer");
-    }
-
-    return await UserModel.getUserById(parsedId);
+    return await UserModel.getUserById(id);
 };
 
 export const getUserByUsername = async (req, res) => {
-    const { username } = req.query;
-    const trimmedUser = username.trim();
+    const { username } = req.params;
 
-    if (!isUsernameValid(trimmedUser)) {
-        throw new Error("The 'username' contains invalid characters");
-    }
+    // If validations fails throws an error with details
+    await validatePartialUser({ username });
 
-    return await UserModel.getUserByUsername(trimmedUser);
+    return await UserModel.getUserByUsername(username.trim());
 };
 
 export const getUserByEmail = async (req, res) => {
-    const { email } = req.query;
+    const { email } = req.params;
 
-    if (!isEmailValid(email)) {
-        throw new Error('The email is invalid');
-    }
+    // If validations fails throws an error with details
+    await validatePartialUser({ email });
 
     return await UserModel.getUserByEmail(email);
 };
 
 // UPDATE
 export const updateUserById = async (req, res) => {
-    const {
-        id,
-        newFullname,
-        newEmail,
-        newUsername,
-        newHashedPassword,
-        newRoleId,
-    } = req.body;
+    const { id } = req.params;
 
-    if (
-        !id ||
-        !newFullname ||
-        !newEmail ||
-        !newUsername ||
-        !newHashedPassword ||
-        newRoleId
-    ) {
-        throw new Error('All fields are required');
-    }
+    const reqData = req.body;
 
-    const parsedId = parseInt(id);
+    const hashedPassword = hashPassword(reqData.password);
 
-    if (Number.isNaN(parsedId)) {
-        throw new Error("The value of 'id' can only be an integer");
-    }
+    // Creating a DTO to match property names to user schema properties
+    const userDTO = {
+        id: id,
+        fullname: reqData.fullname,
+        email: reqData.email,
+        username: reqData.username,
+        password: hashedPassword,
+        roleId: reqData.roleId,
+    };
 
-    if (parsedId < 1) {
-        throw new Error("The value of 'id' is invalid");
-    }
-
-    const parsedNewRoleId = parseInt(newRoleId);
-
-    if (Number.isNaN(parsedNewRoleId)) {
-        throw new Error("The value of 'newRoleId' can only be an integer");
-    }
-
-    if (parsedNewRoleId < 1) {
-        throw new Error("The value of 'newRoleId' is invalid");
-    }
+    // If validations fails throws an error with details
+    await validateUser(userDTO);
 
     const user = await UserModel.getUserById(id);
 
@@ -120,45 +93,229 @@ export const updateUserById = async (req, res) => {
     }
 
     return await UserModel.updateUserById({
+        id: userDTO.id,
+        newFullname: userDTO.fullname,
+        newEmail: userDTO.email,
+        newUsername: userDTO.username,
+        newHashedPassword: userDTO.hashedPassword,
+        newRoleId: userDTO.roleId,
+    });
+};
+
+export const updateUserByUsername = async (req, res) => {
+    const { username: userUsername } = req.params;
+
+    const reqData = req.body;
+    const hashedPassword = hashPassword(reqData.password);
+
+    // If validations fails throws an error with details
+    await validatePartialUser({ username: userUsername });
+
+    // Creating a DTO to match property names to user schema properties
+    const userDTO = {
+        // Random int to fill the required property
+        id: id || 999,
+        fullname: reqData.fullname,
+        email: reqData.email,
+        username: reqData.username,
+        password: hashedPassword,
+        roleId: reqData.roleId,
+    };
+
+    // If validations fails throws an error with details
+    await validateUser(userDTO);
+
+    const user = await UserModel.getUserByUsername(username.trim());
+
+    if (!user) {
+        throw new Error('User not found.');
+    }
+
+    return await UserModel.updateUserByUsername({
+        username: userUsername,
+        newFullname: userDTO.fullname,
+        newEmail: userDTO.email,
+        newUsername: userDTO.username,
+        newHashedPassword: hashedPassword,
+        newRoleId: userDTO.roleId,
+    });
+};
+
+export const updateUserByEmail = async (req, res) => {
+    const { email: userEmail } = req.params;
+
+    const reqData = req.body;
+
+    // If validations fails throws an error with details
+    await validatePartialUser({ email: userEmail });
+
+    const hashedPassword = hashPassword(password);
+
+    // Creating a DTO to match property names to user schema properties
+    const userDTO = {
+        // Random int to fill the required property
+        id: id || 999,
+        fullname: reqData.fullname,
+        email: reqData.email,
+        username: reqData.username,
+        password: hashedPassword,
+        roleId: reqData.roleId,
+    };
+
+    // If validations fails throws an error with details
+    await validateUser(userDTO);
+
+    const user = await UserModel.getUserByEmail(email);
+
+    if (!user) {
+        throw new Error('User not found.');
+    }
+
+    return await UserModel.updateUserByEmail({
+        email: userEmail,
+        newFullname: userDTO.fullname,
+        newEmail: userDTO.email,
+        newUsername: userDTO.username,
+        newHashedPassword: userDTO.password,
+        newRoleId: userDTO.roleId,
+    });
+};
+
+// PATCH
+export const patchUserbyId = async (req, res) => {
+    const { id } = req.params;
+
+    await validatePartialUser({ id });
+
+    const patchData = req.body;
+
+    if (patchData.password) {
+        patchData.password = hashPassword(patchData.password);
+    }
+
+    await validatePartialUser(patchData);
+
+    const user = await UserModel.getUserById(id);
+    if (!user) throw new Error('User not found.');
+
+    const updatedUser = {
+        ...user,
+        ...patchData,
+    };
+
+    return await UserModel.updateUserById({
         id,
-        newFullname,
-        newEmail,
-        newUsername,
-        newHashedPassword,
-        newRoleId,
+        newFullname: updatedUser.fullname,
+        newEmail: updatedUser.email,
+        newUsername: updatedUser.username,
+        newHashedPassword: updatedUser.password,
+        newRoleId: updatedUser.roleId,
+    });
+};
+
+export const patchUserbyUsername = async (req, res) => {
+    const { username } = req.params;
+
+    await validatePartialUser({ username });
+
+    const patchData = req.body;
+
+    if (patchData.password) {
+        patchData.password = hashPassword(patchData.password);
+    }
+
+    await validatePartialUser(patchData);
+
+    const user = await UserModel.getUserByUsername(username);
+    if (!user) throw new Error('User not found.');
+
+    const updatedUser = {
+        ...user,
+        ...patchData,
+    };
+
+    return await UserModel.updateUserByUsername({
+        username,
+        newFullname: updatedUser.fullname,
+        newEmail: updatedUser.email,
+        newUsername: updatedUser.username,
+        newHashedPassword: updatedUser.password,
+        newRoleId: updatedUser.roleId,
+    });
+};
+
+export const patchUserbyEmail = async (req, res) => {
+    const { email } = req.params;
+
+    await validatePartialUser({ email });
+
+    const patchData = req.body;
+
+    if (patchData.password) {
+        patchData.password = hashPassword(patchData.password);
+    }
+
+    await validatePartialUser(patchData);
+
+    const user = await UserModel.getUserByEmail(email);
+    if (!user) throw new Error('User not found.');
+
+    const updatedUser = {
+        ...user,
+        ...patchData,
+    };
+
+    return await UserModel.updateUserByUsername({
+        email,
+        newFullname: updatedUser.fullname,
+        newEmail: updatedUser.email,
+        newUsername: updatedUser.username,
+        newHashedPassword: updatedUser.password,
+        newRoleId: updatedUser.roleId,
     });
 };
 
 // DELETE
 export const deleteUserById = async (req, res) => {
-    const { id } = req.query;
+    const { id } = req.params;
 
-    const parsedId = parseInt(id);
+    // If validations fails throws an error with details
+    await validatePartialUser({ id });
 
-    if (Number.isNaN(parsedId)) {
-        throw new Error("The value of 'id' can only be a integer");
+    const user = await UserModel.getUserById(id);
+
+    if (!user) {
+        throw new Error('User not found.');
     }
 
-    await UserModel.deleteUserById(parsedId);
+    await UserModel.deleteUserById(id);
 };
 
 export const deleteUserByUsername = async (req, res) => {
-    const { username } = req.query;
+    const { username } = req.params;
 
-    const trimmedUser = username.trim();
+    // If validations fails throws an error with details
+    await validatePartialUser({ username });
 
-    if (!isUsernameValid(trimmedUser)) {
-        throw new Error("The 'username' contains invalid characters");
+    const user = await UserModel.getUserByUsername(username.trim());
+
+    if (!user) {
+        throw new Error('User not found.');
     }
 
-    await UserModel.deleteUserByUsername(trimmedUser);
+    await UserModel.deleteUserByUsername(username.trim());
 };
 
 export const deleteUserByEmail = async (req, res) => {
-    const { email } = req.query;
+    const { email } = req.params;
 
-    if (!isEmailValid(email)) {
-        throw new Error('The email is invalid');
+    // If validations fails throws an error with details
+    await validatePartialUser({ email });
+
+    const user = await UserModel.getUserByEmail(email);
+
+    if (!user) {
+        throw new Error('User not found.');
     }
 
     await UserModel.deleteUserByEmail(email);

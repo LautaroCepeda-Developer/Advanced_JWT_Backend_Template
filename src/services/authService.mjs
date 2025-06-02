@@ -4,7 +4,7 @@ import { config } from '../config/config.mjs';
 import { createUser, getUserByUsername } from '../models/auth/userModel.mjs';
 import { isEmailValid, isUsernameValid } from '../tools/commonValidations.mjs';
 
-const hashPassword = (password) => {
+export const hashPassword = (password) => {
     return bcrypt.hash(password, 12);
 };
 
