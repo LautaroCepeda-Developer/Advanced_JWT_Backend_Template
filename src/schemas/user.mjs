@@ -31,11 +31,28 @@ const userSchema = z.object({
     }),
     roleId: z
         .number({
-            invalid_type_error: 'roleId must be a integer',
+            invalid_type_error: 'roleId must be a integer.',
             required_error: 'roleId is required.',
         })
         .int()
         .min(1),
 });
 
-const roleSchema = z.object({});
+const roleSchema = z.object({
+    id: z
+        .number({
+            invalid_type_error: 'id must be a integer.',
+            required_error: 'id is required.',
+        })
+        .int()
+        .min(1),
+    name: z.string({ required_error: 'name is required.' }).min(3),
+    description: z.string().min(3).nullish(),
+    level: z
+        .number({
+            invalid_type_error: 'level must be an integer.',
+            required_error: 'level is required',
+        })
+        .int()
+        .min(1),
+});
