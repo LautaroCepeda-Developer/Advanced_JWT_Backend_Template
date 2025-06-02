@@ -8,8 +8,8 @@ const roleSchema = z.object({
         })
         .int()
         .min(1),
-    name: z.string({ required_error: 'name is required.' }).min(3),
-    description: z.string().min(3).nullish(),
+    name: z.string({ required_error: 'name is required.' }).trim().min(3),
+    description: z.string().trim().min(3).nullish(),
     level: z
         .number({
             invalid_type_error: 'level must be an integer.',

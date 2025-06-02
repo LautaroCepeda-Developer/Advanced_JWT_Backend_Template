@@ -13,15 +13,18 @@ const userSchema = z.object({
         .string({
             required_error: 'fullname is required.',
         })
+        .trim()
         .min(3),
     email: z
         .string({
             required_error: 'email is required.',
         })
+        .trim()
         .toLowerCase()
         .email({ pattern: z.regexes.unicodeEmail }),
     username: z
         .string({ required_error: 'username is required.' })
+        .trim()
         .min(5)
         .refine((val) => isUsernameValid(val), {
             message: 'username contains invalid characters.',
