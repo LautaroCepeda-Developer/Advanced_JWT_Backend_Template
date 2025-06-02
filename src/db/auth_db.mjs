@@ -35,7 +35,6 @@ db.exec(`
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         role_id INTEGER NOT NULL default 3, --id of 'user' role
-        level INTEGER NOT NULL DEFAULT 10,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (role_id) REFERENCES roles(id)
