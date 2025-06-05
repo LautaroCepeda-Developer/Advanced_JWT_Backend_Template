@@ -289,6 +289,7 @@ export const deleteUserById = async (req, res) => {
     }
 
     await UserModel.deleteUserById(id);
+    return user;
 };
 
 export const deleteUserByUsername = async (req, res) => {
@@ -304,6 +305,7 @@ export const deleteUserByUsername = async (req, res) => {
     }
 
     await UserModel.deleteUserByUsername(username.trim());
+    return user;
 };
 
 export const deleteUserByEmail = async (req, res) => {
@@ -319,4 +321,6 @@ export const deleteUserByEmail = async (req, res) => {
     }
 
     await UserModel.deleteUserByEmail(email);
+
+    return user;
 };
