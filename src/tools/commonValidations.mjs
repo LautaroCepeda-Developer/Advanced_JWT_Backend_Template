@@ -33,7 +33,7 @@ export const isEmailValid = (email) => {
     if (domain.contains('..')) return false;
 };
 
-export const isUsernameValid = (username) => {
+export const isNameValid = (name) => {
     const invalidChars = [
         '"',
         ':',
@@ -57,7 +57,7 @@ export const isUsernameValid = (username) => {
     ];
 
     const containsInvalidChars = invalidChars.some((char) =>
-        username.includes(char)
+        name.includes(char)
     );
 
     return !containsInvalidChars;

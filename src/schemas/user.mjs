@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { isUsernameValid } from '../tools/commonValidations.mjs';
+import { isNameValid } from '../tools/commonValidations.mjs';
 
 const userSchema = z.object({
     id: z
@@ -25,7 +25,7 @@ const userSchema = z.object({
         .string({ required_error: 'username is required.' })
         .trim()
         .min(5)
-        .refine((val) => isUsernameValid(val), {
+        .refine((val) => isNameValid(val), {
             message: 'username contains invalid characters.',
         }),
     password: z.string({

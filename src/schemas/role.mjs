@@ -8,7 +8,13 @@ const roleSchema = z.object({
         })
         .int()
         .min(1),
-    name: z.string({ required_error: 'name is required.' }).trim().min(3),
+    name: z
+        .string({ required_error: 'name is required.' })
+        .trim()
+        .min(3)
+        .refine((val) => isNameValid(val), {
+            message: 'name contains invalid characters.',
+        }),
     description: z.string().trim().min(3).nullish(),
     level: z
         .number({

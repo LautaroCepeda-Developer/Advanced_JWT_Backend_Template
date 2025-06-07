@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
 import { createUser, getUserByUsername } from '../models/auth/userModel.mjs';
-import { isEmailValid, isUsernameValid } from '../tools/commonValidations.mjs';
+import { isEmailValid, isNameValid } from '../tools/commonValidations.mjs';
 
 export const hashPassword = (password) => {
     return bcrypt.hash(password, 12);
@@ -37,7 +37,7 @@ const signToken = (payload) => {
 };
 
 export const registerUser = async (req, res) => {
-    if (!isUsernameValid) {
+    if (!isNameValid) {
         throw new Error("The 'username' contains invalid characters");
     }
 
