@@ -1,6 +1,10 @@
 import * as RoleModel from '../models/roleModel.mjs';
 import { validateRole, validatePartialRole } from '../schemas/role.mjs';
-import { isNameValid } from '../tools/commonValidations.mjs';
+
+// ---- GET
+export const getRoles = async (req, res) => {
+    return await RoleModel.getRoles();
+};
 
 export const getRoleById = async (req, res) => {
     const { id } = req.params;
@@ -16,6 +20,7 @@ export const getRoleByName = async (req, res) => {
     return await RoleModel.getRoleByName(name);
 };
 
+// ---- POST/CREATE
 export const createRole = async (req, res) => {
     const reqData = req.body;
 
@@ -39,6 +44,7 @@ export const createRole = async (req, res) => {
     });
 };
 
+// ---- PUT/UPDATE
 export const updateRoleById = async (req, res) => {
     const { id } = req.params;
 
@@ -92,6 +98,7 @@ export const updateRoleByName = async (req, res) => {
     });
 };
 
+// ---- PATCH
 export const patchRoleById = async (req, res) => {
     const { id } = req.params;
 
@@ -140,6 +147,7 @@ export const patchRoleByName = async (req, res) => {
     });
 };
 
+// ---- DELETE
 export const deleteRoleById = async (req, res) => {
     const { id } = req.params;
     await validatePartialRole({ id });
