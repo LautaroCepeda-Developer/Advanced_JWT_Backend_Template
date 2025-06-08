@@ -2,7 +2,7 @@ import express from 'express';
 import { verifyToken, checkRole } from '../middlewares/auth.mjs';
 import * as UserController from '../controllers/userController.mjs';
 
-const router = express.Router();
+export const router = express.Router();
 
 // ---- GET
 router.get(
@@ -98,5 +98,3 @@ router.delete(
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.deleteUserByEmail
 );
-
-export default router;

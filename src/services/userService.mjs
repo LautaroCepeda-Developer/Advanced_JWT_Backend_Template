@@ -26,7 +26,7 @@ export const getUsersWithPagination = async (req, res) => {
 
     const offset = (parsedPage - 1) * parsedLimit;
 
-    const users = await UserModel.getUsers(offset, parsedLimit);
+    const users = await UserModel.getUsers(parsedLimit, offset);
     const total = parseInt(await UserModel.countUsers());
     const totalPages = Math.ceil(total / parsedLimit);
 
@@ -43,8 +43,14 @@ export const getUserById = async (req, res) => {
     const { id } = req.params;
     // If validations fails throws an error with details
     await validatePartialUser({ id });
+    const user = await UserModel.getUserById(id);
 
-    return await UserModel.getUserById(id);
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found.');
+    }
+
+    return user;
 };
 
 export const getUserByUsername = async (req, res) => {
@@ -53,7 +59,14 @@ export const getUserByUsername = async (req, res) => {
     // If validations fails throws an error with details
     await validatePartialUser({ username });
 
-    return await UserModel.getUserByUsername(username.trim());
+    const user = await UserModel.getUserByUsername(username.trim());
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found.');
+    }
+
+    return user;
 };
 
 export const getUserByEmail = async (req, res) => {
@@ -62,7 +75,14 @@ export const getUserByEmail = async (req, res) => {
     // If validations fails throws an error with details
     await validatePartialUser({ email });
 
-    return await UserModel.getUserByEmail(email);
+    const user = await UserModel.getUserByEmail(email);
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found.');
+    }
+
+    return user;
 };
 
 // UPDATE
@@ -89,6 +109,7 @@ export const updateUserById = async (req, res) => {
     const user = await UserModel.getUserById(id);
 
     if (!user) {
+        res.status(404);
         throw new Error('User not found.');
     }
 
@@ -128,6 +149,7 @@ export const updateUserByUsername = async (req, res) => {
     const user = await UserModel.getUserByUsername(username.trim());
 
     if (!user) {
+        res.status(404);
         throw new Error('User not found.');
     }
 
@@ -168,6 +190,7 @@ export const updateUserByEmail = async (req, res) => {
     const user = await UserModel.getUserByEmail(email);
 
     if (!user) {
+        res.status(404);
         throw new Error('User not found.');
     }
 
@@ -196,7 +219,10 @@ export const patchUserbyId = async (req, res) => {
     await validatePartialUser(patchData);
 
     const user = await UserModel.getUserById(id);
-    if (!user) throw new Error('User not found.');
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found.');
+    }
 
     const updatedUser = {
         ...user,
@@ -227,7 +253,10 @@ export const patchUserbyUsername = async (req, res) => {
     await validatePartialUser(patchData);
 
     const user = await UserModel.getUserByUsername(username);
-    if (!user) throw new Error('User not found.');
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found.');
+    }
 
     const updatedUser = {
         ...user,
@@ -258,7 +287,10 @@ export const patchUserbyEmail = async (req, res) => {
     await validatePartialUser(patchData);
 
     const user = await UserModel.getUserByEmail(email);
-    if (!user) throw new Error('User not found.');
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found.');
+    }
 
     const updatedUser = {
         ...user,
@@ -285,6 +317,7 @@ export const deleteUserById = async (req, res) => {
     const user = await UserModel.getUserById(id);
 
     if (!user) {
+        res.status(404);
         throw new Error('User not found.');
     }
 
@@ -301,6 +334,7 @@ export const deleteUserByUsername = async (req, res) => {
     const user = await UserModel.getUserByUsername(username.trim());
 
     if (!user) {
+        res.status(404);
         throw new Error('User not found.');
     }
 
@@ -317,6 +351,7 @@ export const deleteUserByEmail = async (req, res) => {
     const user = await UserModel.getUserByEmail(email);
 
     if (!user) {
+        res.status(404);
         throw new Error('User not found.');
     }
 

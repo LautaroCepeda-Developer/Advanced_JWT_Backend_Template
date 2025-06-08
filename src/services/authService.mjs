@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
 import { createUser, getUserByUsername } from '../models/auth/userModel.mjs';
 import { isEmailValid, isNameValid } from '../tools/commonValidations.mjs';
+import { validateUser, validatePartialUser } from '../schemas/user.mjs';
+import { fr } from 'zod/v4/locales';
 
 export const hashPassword = (password) => {
     return bcrypt.hash(password, 12);
@@ -26,8 +28,8 @@ const signToken = (payload) => {
     // Set the fields to be included in the token
     const fields = {
         username: payload.username,
-        role: payload.role,
-        level: payload.level,
+        role: payload.role_name,
+        level: payload.role_level,
     };
 
     // Sign the token
@@ -60,6 +62,15 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
+    await validateUser({
+        fullname: fullname,
+        email: email,
+        username: username,
+        password: hashedPassword,
+        role: role,
+        level: level,
+    });
+
     createUser({ fullname, email, username, hashedPassword, role, level });
 };
 
@@ -73,7 +84,6 @@ export const loginUser = async (req, res) => {
     if (!valid) {
         throw new Error('Invalid user or password');
     }
-
     const token = signToken(user);
 
     return token;

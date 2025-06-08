@@ -1,4 +1,4 @@
-import db from '../db/auth_db.mjs';
+import db from '../../db/auth_db.mjs';
 
 export const getRoles = async () => {
     const stmt = db.prepare('SELECT * FROM roles');

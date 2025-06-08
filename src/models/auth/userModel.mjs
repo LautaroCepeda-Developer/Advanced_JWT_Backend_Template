@@ -8,20 +8,15 @@ export const countUsers = async () => {
     return result.total;
 };
 
-const roleJoinPart = `
-    r.name AS role_name,
-    r.level AS role_level
-    FROM users u
-    JOIN roles r 
-    ON u.role_id = r.id
-`;
+const roleJoinPart =
+    'roles.name AS role_name, roles.level AS role_level FROM users JOIN roles ON users.role_id = roles.id';
 
 export const getUsers = async (limit = 10, offset = 0) => {
     const stmt = db.prepare(`
         SELECT 
-        u.*,
+        users.*,
         ${roleJoinPart}
-        ORDER BY u.id
+        ORDER BY users.id
         LIMIT ? OFFSET ?
         `);
     return stmt.all(limit, offset);
@@ -29,9 +24,9 @@ export const getUsers = async (limit = 10, offset = 0) => {
 
 export const getUserById = async (id) => {
     const stmt = db.prepare(`
-        SELECT u.*,
+        SELECT users.*,
         ${roleJoinPart}
-        WHERE id = ?
+        WHERE users.id = ?
     `);
 
     return stmt.get(id);
@@ -39,17 +34,17 @@ export const getUserById = async (id) => {
 
 export const getUserByUsername = async (username) => {
     const stmt = db.prepare(`
-        SELECT u.*,
+        SELECT users.*,
         ${roleJoinPart}
-        WHERE username = ?`);
+        WHERE users.username = ?`);
     return stmt.get(username);
 };
 
 export const getUserByEmail = async (email) => {
     const stmt = db.prepare(`SELECT
-        u.*,
+        users.*,
         ${roleJoinPart}
-        WHERE email = ?`);
+        WHERE users.email = ?`);
     return stmt.get(email);
 };
 

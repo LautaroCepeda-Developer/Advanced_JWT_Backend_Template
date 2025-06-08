@@ -62,3 +62,9 @@ export const isNameValid = (name) => {
 
     return !containsInvalidChars;
 };
+
+export const isNumber = (number) => {
+    const result = parseInt(number);
+
+    return !Number.isNaN(result);
+};

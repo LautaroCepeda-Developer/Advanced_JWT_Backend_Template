@@ -1,28 +1,32 @@
-import * as z from 'zod';
+import * as z from 'zod/v4';
 
 const roleSchema = z.object({
     id: z
-        .number({
-            invalid_type_error: 'id must be a integer.',
+        .string({
             required_error: 'id is required.',
         })
-        .int()
-        .min(1),
+        .min(1)
+        .refine((val) => isNumber(val), {
+            error: 'id can only be an intenger.',
+        })
+        .refine((val) => parseInt(val) > 0, { error: 'id is invalid.' }),
     name: z
         .string({ required_error: 'name is required.' })
         .trim()
         .min(3)
         .refine((val) => isNameValid(val), {
-            message: 'name contains invalid characters.',
+            error: 'name contains invalid characters.',
         }),
     description: z.string().trim().min(3).nullish(),
     level: z
-        .number({
-            invalid_type_error: 'level must be an integer.',
+        .string({
             required_error: 'level is required',
         })
-        .int()
-        .min(1),
+        .min(1)
+        .refine((val) => isNumber(val), {
+            error: 'level can only be an intenger.',
+        })
+        .refine((val) => parseInt(val) > 0, { error: 'level is invalid.' }),
 });
 
 export const validateRole = async (input) => {

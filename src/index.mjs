@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { config } from './config/config.mjs';
 import * as AuthRoutes from './routes/auth.mjs';
+import * as UserRouter from './routes/user.mjs';
+import * as RoleRouter from './routes/role.mjs';
+import { hashPassword } from './services/authService.mjs';
 
 // Initialize the express app
 const app = express();
@@ -17,6 +20,10 @@ app.use(express.json());
 
 // Authentication routes
 app.use('/auth', AuthRoutes.router);
+
+app.use('/people', UserRouter.router);
+
+app.use('/people', RoleRouter.router);
 
 // Middleware to handle 404 errors
 app.use((req, res, next) => {
