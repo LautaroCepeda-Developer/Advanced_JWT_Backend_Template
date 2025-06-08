@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config/config.mjs';
-import { authRoutes } from './routes/auth.mjs';
+import * as AuthRoutes from './routes/auth.mjs';
 
 // Initialize the express app
 const app = express();
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // Authentication routes
-app.use('/auth', authRoutes);
+app.use('/auth', AuthRoutes.router);
 
 // Middleware to handle 404 errors
 app.use((req, res, next) => {

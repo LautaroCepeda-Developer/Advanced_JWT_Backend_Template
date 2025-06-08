@@ -1,4 +1,4 @@
-import { Database } from 'better-sqlite3';
+import Database from 'better-sqlite3';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -13,7 +13,7 @@ db.exec('PRAGMA foreign_keys = ON');
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS roles (
-        id INTEGER PRIMARY KEY AUTOINCREMENTE
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT UNIQUE NOT NULL,
         description TEXT,
         level INTEGER NOT NULL
@@ -36,9 +36,19 @@ db.exec(`
         password TEXT NOT NULL,
         role_id INTEGER NOT NULL default 3, --id of 'user' role
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (role_id) REFERENCES roles(id)
     )
 `);
+
+db.exec(`
+    CREATE TRIGGER IF NOT EXISTS update_users_updated_at
+    AFTER UPDATE ON users
+    FOR EACH ROW
+    BEGIN
+        UPDATE users
+        SET updated_at = CURRENT_TIMESTAMP
+        WHERE id = OLD.id;
+    END;`);
 
 export default db;

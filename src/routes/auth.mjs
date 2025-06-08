@@ -1,8 +1,8 @@
 import express from 'express';
 import { verifyToken, checkRole } from '../middlewares/auth.mjs';
-import * as AuthController from '../controllers/auth.mjs';
+import * as AuthController from '../controllers/authController.mjs';
 
-const router = express.Router();
+export const router = express.Router();
 
 router.post(
     '/register',
@@ -10,6 +10,5 @@ router.post(
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     AuthController.register
 );
-router.post('/login', AuthController.login);
 
-export default router;
+router.post('/login', AuthController.login);

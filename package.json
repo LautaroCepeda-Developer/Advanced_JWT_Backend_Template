@@ -1,5 +1,8 @@
 {
   "module": "./src/index.mjs",
+  "scripts": {
+    "start": "node ./src/index.mjs"
+  },
   "dependencies": {
     "bcrypt": "5.1.1",
     "better-sqlite3": "11.9.1",
