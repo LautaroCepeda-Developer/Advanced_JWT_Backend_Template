@@ -20,7 +20,7 @@ router.get(
 );
 
 router.get(
-    '/roles/:name',
+    '/roles/name/:name',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     RoleController.getRoleByName
@@ -43,7 +43,7 @@ router.put(
 );
 
 router.put(
-    '/roles/:name',
+    '/roles/name/:name',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     RoleController.updateRoleByName
@@ -58,7 +58,7 @@ router.patch(
 );
 
 router.patch(
-    '/roles/:name',
+    '/roles/name/:name',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     RoleController.patchRoleByName
@@ -73,7 +73,7 @@ router.delete(
 );
 
 router.delete(
-    '/roles/:name',
+    '/roles/name/:name',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     RoleController.deleteRoleByName

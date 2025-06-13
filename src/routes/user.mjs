@@ -20,14 +20,14 @@ router.get(
 );
 
 router.get(
-    '/users/:username',
+    '/users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.getUserByUsername
 );
 
 router.get(
-    'users/:email',
+    'users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.getUserByEmail
@@ -42,14 +42,14 @@ router.put(
 );
 
 router.put(
-    'users/:username',
+    'users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.updateUserByUsername
 );
 
 router.put(
-    'users/:email',
+    'users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.updateUserByEmail
@@ -64,14 +64,14 @@ router.patch(
 );
 
 router.patch(
-    'users/:username',
+    'users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.patchUserByUsername
 );
 
 router.patch(
-    'users/:email',
+    'users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.patchUserByEmail
@@ -86,14 +86,14 @@ router.delete(
 );
 
 router.delete(
-    'users/:username',
+    'users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.deleteUserByUsername
 );
 
 router.delete(
-    'users/:email',
+    'users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.deleteUserByEmail
