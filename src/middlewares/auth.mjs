@@ -1,18 +1,35 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
+import { signedCookie } from 'cookie-parser';
 
 export const verifyToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader?.split(' ')[1];
+    const cookie = req.signedCookies['authCookie'];
+    const cookieVal = signedCookie(cookie, config.cookieSecret);
 
-    if (!token) return res.status(401).json({ message: 'Token required' });
+    if (!cookie) {
+        return res
+            .status(403)
+            .redirect(config.homeURL)
+            .json({ message: 'Missing required cookies.' });
+    }
+
+    if (cookieVal === false) {
+        return res
+            .status(403)
+            .redirect(config.homeURL)
+            .json({ message: 'Invalid or expired cookie.' });
+    }
 
     try {
-        const decoded = jwt.verify(token, config.jwtSecret);
+        const decoded = jwt.verify(cookieVal, config.jwtSecret);
+        console.log(decoded);
         req.user = decoded;
         next();
     } catch (err) {
-        return res.status(403).json({ message: 'Invalid or expired token' });
+        return res
+            .status(403)
+            .redirect(config.homeURL)
+            .json({ message: 'Invalid or expired token.' });
     }
 };
 
@@ -25,7 +42,7 @@ export const checkRole = ({ minLevel = 0, allowedRoles = [] } = {}) => {
         }
 
         return res.status(403).json({
-            message: "you don't have permission to access this route",
+            message: 'Insufficient permissions to access this route',
         });
     };
 };

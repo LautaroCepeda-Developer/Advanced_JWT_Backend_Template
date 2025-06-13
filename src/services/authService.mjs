@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
 import { createUser, getUserByUsername } from '../models/auth/userModel.mjs';
 import { isEmailValid, isNameValid } from '../tools/commonValidations.mjs';
-import { validateUser, validatePartialUser } from '../schemas/user.mjs';
-import { fr } from 'zod/v4/locales';
+import { validateUser } from '../schemas/user.mjs';
+import { getRoleByName } from '../models/auth/roleModel.mjs';
+import 'cookie-parser';
 
 export const hashPassword = (password) => {
     return bcrypt.hash(password, 12);
@@ -21,6 +22,10 @@ const tokenExpiration = (role) => {
         default:
             return 60 * 60; // 1 hour
     }
+};
+
+const cookieExpiration = (role) => {
+    return tokenExpiration(role) * 1000;
 };
 
 // Generate a JWT Token
@@ -58,20 +63,48 @@ export const registerUser = async (req, res) => {
         throw new Error('Email already exists');
     }
 
-    const { fullname, email, username, password, role, level } = req.body;
+    const { fullname, email, username, password, role } = req.body;
+
+    const roleResponse = await getRoleByName(role);
+
+    if (!roleResponse) {
+        throw new Error('Role not found.');
+    }
+
+    const roleId = roleResponse.id;
+    const roleLevel = roleResponse.level;
+
+    if (
+        (role === 'superadmin' || role === 'admin') &&
+        req.user.role_name !== 'superadmin'
+    ) {
+        throw new Error(
+            'Only superadmins can create other admins and superadmins.'
+        );
+    }
+
+    if (
+        roleLevel >= req.user.role_level &&
+        (req.user.role_level !== 1 || req.user.role_level !== '1')
+    ) {
+        throw new Error(
+            "Users cannot be created with roles that have higher access than the current user's role."
+        );
+    }
 
     const hashedPassword = await hashPassword(password);
 
     await validateUser({
+        // Random id to validate the entire schema
+        id: 999,
         fullname: fullname,
         email: email,
         username: username,
         password: hashedPassword,
-        role: role,
-        level: level,
+        roleId: roleId,
     });
 
-    createUser({ fullname, email, username, hashedPassword, role, level });
+    createUser({ fullname, email, username, hashedPassword, roleId });
 };
 
 export const loginUser = async (req, res) => {
@@ -84,7 +117,21 @@ export const loginUser = async (req, res) => {
     if (!valid) {
         throw new Error('Invalid user or password');
     }
+
     const token = signToken(user);
 
-    return token;
+    const decoded = jwt.verify(token, config.jwtSecret);
+
+    res.cookie('authCookie', token, {
+        maxAge: cookieExpiration(decoded.role),
+        signed: true,
+        httpOnly: true,
+    });
+};
+
+export const logout = async (req, res) => {
+    res.clearCookie('authCookie', {
+        signed: true,
+        httpOnly: true,
+    });
 };
