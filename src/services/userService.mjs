@@ -30,12 +30,17 @@ export const getUsersWithPagination = async (req, res) => {
     const total = parseInt(await UserModel.countUsers());
     const totalPages = Math.ceil(total / parsedLimit);
 
+    // Remove the superadmins of the user array
+    const usersFiltered = users.filter(
+        (user) => !(user.roleId === 1 || user.roleId === '1')
+    );
+
     return {
         parsedPage,
         parsedLimit,
         total,
         totalPages,
-        users,
+        usersFiltered,
     };
 };
 

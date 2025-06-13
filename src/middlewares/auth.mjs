@@ -22,7 +22,6 @@ export const verifyToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(cookieVal, config.jwtSecret);
-        console.log(decoded);
         req.user = decoded;
         next();
     } catch (err) {
