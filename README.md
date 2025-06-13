@@ -18,7 +18,7 @@ I would change the database where the users are located for a more robust one wi
 * GIT for the version control.
 * Hoppscotch to test the endpoints.
 * NodeJS to run the project and install the dependencies.
-* SQLite as Database
+* SQLite as Database.
 
 ### Libraries and Modules used.
 * BCrypt to hash the passwords.
@@ -28,7 +28,7 @@ I would change the database where the users are located for a more robust one wi
 * DotENV to manage the enviroment variables.
 * JsonWebToken to easily and securely manage user data and sessions.
 * ZOD V4 to create schemas, keep code cleaner, and facilitate data validation.
-* Ocurrences Module by Victornpb for count occurrences of a substring in a string (to perform some validations in the data)
+* Ocurrences Module by Victornpb for count occurrences of a substring in a string (to perform some validations in the data).
 
 ## Features
 * Scalable architecture.
@@ -52,6 +52,7 @@ HOME_URL=https://www.mysite.com
 * <b>JWT_SECRET:</b> Secret used to sign and decode json web tokens (JWT).<br>
 * <b>COOKIE_SECRET:</b> Secret used to sign and decode cookies.<br>
 * <b>HOME_URL:</b> Url to redirect in case of a 403 Forbidden response.
+* See [config.mjs](https://github.com/LautaroCepeda-Developer/Advanced_JWT_Backend_Template/blob/9592acace27a64d7ccab794e0e665feb34b92dde/src/config/config.mjs) to add more ENV vars.
 
 #### Entity Relationship Diagram (ERD)
 ![ERD](https://github.com/user-attachments/assets/aa74cd3e-2670-45b2-bd1e-dabc95d255fb)<br>
