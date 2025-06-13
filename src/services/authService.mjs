@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
 import { createUser, getUserByUsername } from '../models/auth/userModel.mjs';
 import { isEmailValid, isNameValid } from '../tools/commonValidations.mjs';
-import { validateUser } from '../schemas/user.mjs';
+import { validatePartialUser, validateUser } from '../schemas/user.mjs';
 import { getRoleByName } from '../models/auth/roleModel.mjs';
 import 'cookie-parser';
 
@@ -44,13 +44,10 @@ const signToken = (payload) => {
 };
 
 export const registerUser = async (req, res) => {
-    if (!isNameValid) {
-        throw new Error("The 'username' contains invalid characters");
-    }
-
-    if (!isEmailValid(req.body.email)) {
-        throw new Error('Invalid email');
-    }
+    await validatePartialUser({
+        username: req.body.username,
+        email: req.body.email,
+    });
 
     const existingUser = await getUserByUsername(req.body.username);
     const existingEmail = await getUserByEmail(req.body.email);
