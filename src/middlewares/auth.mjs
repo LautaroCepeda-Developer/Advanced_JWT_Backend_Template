@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/config.mjs';
 import { signedCookie } from 'cookie-parser';
+import { logout } from '../services/authService.mjs';
 
 export const verifyToken = (req, res, next) => {
     const cookie = req.signedCookies['authCookie'];
@@ -9,15 +10,21 @@ export const verifyToken = (req, res, next) => {
     if (!cookie) {
         return res
             .status(403)
-            .redirect(config.homeURL)
-            .json({ message: 'Missing required cookies.' });
+            .json({
+                redirect: config.homeURL,
+                message: 'Missing required cookies.',
+            });
     }
 
     if (cookieVal === false) {
+        logout(req, res);
+
         return res
             .status(403)
-            .redirect(config.homeURL)
-            .json({ message: 'Invalid or expired cookie.' });
+            .json({
+                redirect: config.homeURL,
+                message: 'Invalid or expired cookie.',
+            });
     }
 
     try {
@@ -25,10 +32,13 @@ export const verifyToken = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (err) {
+        logout(req, res);
         return res
             .status(403)
-            .redirect(config.homeURL)
-            .json({ message: 'Invalid or expired token.' });
+            .json({
+                redirect: config.homeURL,
+                message: 'Invalid or expired token.',
+            });
     }
 };
 

@@ -14,7 +14,7 @@ const app = express();
 app.disable('x-powered-by');
 
 // Enable CORS
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
