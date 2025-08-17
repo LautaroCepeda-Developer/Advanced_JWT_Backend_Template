@@ -37,10 +37,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         await AuthService.logout(req, res);
-        return res
-            .status(302)
-            .redirect(config.homeURL)
-            .json({ message: 'Logged out successfully.' });
+        return res.status(200).json({ message: 'Logged out successfully.' });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

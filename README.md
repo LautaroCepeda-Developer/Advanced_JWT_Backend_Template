@@ -45,13 +45,13 @@ I would change the database where the users are located for a more robust one wi
 PORT=3000
 JWT_SECRET=JWT_SUPER_SECRET_KEY
 COOKIE_SECRET=COOKIE_SUPER_SECRET_KEY
-HOME_URL=https://www.mysite.com
+CORS_ORIGIN=http://localhost:3000
 ```
 <b>Explanation:</b><br>
 * <b>PORT:</b> Port on which the API will listen.
 * <b>JWT_SECRET:</b> Secret used to sign and decode json web tokens (JWT).<br>
 * <b>COOKIE_SECRET:</b> Secret used to sign and decode cookies.<br>
-* <b>HOME_URL:</b> Url to redirect in case of a 403 Forbidden response.
+* <b>CORS_ORIGIN:</b> Authorized domain(s) to make API requests. This can be a single domain (e.g., `http://localhost:3000`), multiple domains separated by commas, or `*` to allow all origins (not recommended for production due to security reasons).
 * See [config.mjs](https://github.com/LautaroCepeda-Developer/Advanced_JWT_Backend_Template/blob/9592acace27a64d7ccab794e0e665feb34b92dde/src/config/config.mjs) to add more ENV vars.
 
 #### Entity Relationship Diagram (ERD)

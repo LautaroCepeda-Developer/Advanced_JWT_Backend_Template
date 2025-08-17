@@ -4,7 +4,7 @@ import { config } from './config/config.mjs';
 import * as AuthRoutes from './routes/auth.mjs';
 import * as UserRouter from './routes/user.mjs';
 import * as RoleRouter from './routes/role.mjs';
-import { hashPassword } from './services/authService.mjs';
+
 import cookieParser from 'cookie-parser';
 
 // Initialize the express app
@@ -14,7 +14,7 @@ const app = express();
 app.disable('x-powered-by');
 
 // Enable CORS
-app.use(cors({ credentials: true }));
+app.use(cors({ origin: config.corsOrigin, credentials: true }));
 
 // Middleware to parse JSON bodies
 app.use(express.json());

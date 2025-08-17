@@ -32,6 +32,7 @@ const cookieExpiration = (role) => {
 const signToken = (payload) => {
     // Set the fields to be included in the token
     const fields = {
+		fullname: payload.fullname,
         username: payload.username,
         role: payload.role_name,
         level: payload.role_level,

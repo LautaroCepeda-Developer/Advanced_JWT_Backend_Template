@@ -8,23 +8,17 @@ export const verifyToken = (req, res, next) => {
     const cookieVal = signedCookie(cookie, config.cookieSecret);
 
     if (!cookie) {
-        return res
-            .status(403)
-            .json({
-                redirect: config.homeURL,
-                message: 'Missing required cookies.',
-            });
+        return res.status(401).json({
+            message: 'Missing required cookies.',
+        });
     }
 
     if (cookieVal === false) {
         logout(req, res);
 
-        return res
-            .status(403)
-            .json({
-                redirect: config.homeURL,
-                message: 'Invalid or expired cookie.',
-            });
+        return res.status(403).json({
+            message: 'Invalid or expired cookie.',
+        });
     }
 
     try {
@@ -33,12 +27,9 @@ export const verifyToken = (req, res, next) => {
         next();
     } catch (err) {
         logout(req, res);
-        return res
-            .status(403)
-            .json({
-                redirect: config.homeURL,
-                message: 'Invalid or expired token.',
-            });
+        return res.status(403).json({
+            message: 'Invalid or expired token.',
+        });
     }
 };
 
