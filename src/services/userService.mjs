@@ -241,7 +241,7 @@ export const patchUserbyId = async (req, res) => {
         newEmail: updatedUser.email,
         newUsername: updatedUser.username,
         newHashedPassword: updatedUser.password,
-        newRoleId: updatedUser.roleId,
+        newRoleId: updatedUser.role_id,
     });
 };
 
@@ -275,7 +275,7 @@ export const patchUserbyUsername = async (req, res) => {
         newEmail: updatedUser.email,
         newUsername: updatedUser.username,
         newHashedPassword: updatedUser.password,
-        newRoleId: updatedUser.roleId,
+        newRoleId: updatedUser.role_id,
     });
 };
 
@@ -309,7 +309,7 @@ export const patchUserbyEmail = async (req, res) => {
         newEmail: updatedUser.email,
         newUsername: updatedUser.username,
         newHashedPassword: updatedUser.password,
-        newRoleId: updatedUser.roleId,
+        newRoleId: updatedUser.role_id,
     });
 };
 
