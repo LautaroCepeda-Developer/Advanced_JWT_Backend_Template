@@ -224,6 +224,7 @@ export const patchUserbyId = async (req, res) => {
     await validatePartialUser(patchData);
 
     const user = await UserModel.getUserById(id);
+
     if (!user) {
         res.status(404);
         throw new Error('User not found.');

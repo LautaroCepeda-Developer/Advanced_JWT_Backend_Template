@@ -27,7 +27,7 @@ router.get(
 );
 
 router.get(
-    'users/email/:email',
+    '/users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.getUserByEmail
@@ -35,21 +35,21 @@ router.get(
 
 // ---- PUT
 router.put(
-    'users/:id',
+    '/users/:id',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.updateUserById
 );
 
 router.put(
-    'users/username/:username',
+    '/users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.updateUserByUsername
 );
 
 router.put(
-    'users/email/:email',
+    '/users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.updateUserByEmail
@@ -57,21 +57,21 @@ router.put(
 
 // ---- PATCH
 router.patch(
-    'users/:id',
+    '/users/:id',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.patchUserById
 );
 
 router.patch(
-    'users/username/:username',
+    '/users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.patchUserByUsername
 );
 
 router.patch(
-    'users/email/:email',
+    '/users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.patchUserByEmail
@@ -79,21 +79,21 @@ router.patch(
 
 // ---- DELETE
 router.delete(
-    'users/:id',
+    '/users/:id',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.deleteUserById
 );
 
 router.delete(
-    'users/username/:username',
+    '/users/username/:username',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.deleteUserByUsername
 );
 
 router.delete(
-    'users/email/:email',
+    '/users/email/:email',
     verifyToken,
     checkRole({ minLevel: 5, allowedRoles: ['admin', 'superadmin'] }),
     UserController.deleteUserByEmail
